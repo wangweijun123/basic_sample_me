@@ -110,7 +110,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         final ProductItemBinding binding;
-
+        //
         public ProductViewHolder(ProductItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

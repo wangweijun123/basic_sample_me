@@ -18,6 +18,7 @@ package com.example.android.persistence.ui;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ListFragmentBinding;
 import com.example.android.persistence.db.entity.ProductEntity;
+import com.example.android.persistence.util.ThreadUtil;
 import com.example.android.persistence.viewmodel.ProductListViewModel;
 
 import java.util.List;
@@ -74,10 +76,12 @@ public class ProductListFragment extends Fragment {
     private void subscribeUi(LiveData<List<ProductEntity>> liveData) {
         // Update the list when the data changes
         liveData.observe(getViewLifecycleOwner(), myProducts -> {
-            if (myProducts != null) {
+             if (myProducts != null) {
+                Log.i(TAG, "subscribeUi: 数据回来了 " + ThreadUtil.getThreadInfo());
                 mBinding.setIsLoading(false);
                 mProductAdapter.setProductList(myProducts);
             } else {
+                Log.i(TAG, "subscribeUi: 数据 is null " + ThreadUtil.getThreadInfo());
                 mBinding.setIsLoading(true);
             }
             // espresso does not know how to wait for data binding's loop so we execute changes
