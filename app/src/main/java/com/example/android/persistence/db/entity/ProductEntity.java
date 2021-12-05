@@ -83,4 +83,14 @@ public class ProductEntity implements Product {
         this.description = product.getDescription();
         this.price = product.getPrice();
     }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

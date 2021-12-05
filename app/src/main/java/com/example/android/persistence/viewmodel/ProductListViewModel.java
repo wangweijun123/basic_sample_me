@@ -18,18 +18,24 @@ package com.example.android.persistence.viewmodel;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 
 import com.example.android.persistence.BasicApp;
 import com.example.android.persistence.DataRepository;
 import com.example.android.persistence.db.entity.ProductEntity;
+import com.example.android.persistence.ui.ProductListFragment;
+import com.example.android.persistence.ui.test.User;
+import com.example.android.persistence.util.ThreadUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +46,7 @@ public class ProductListViewModel extends AndroidViewModel {
 
     private final SavedStateHandle mSavedStateHandler;
     private final DataRepository mRepository;
-    private final LiveData<List<ProductEntity>> mProducts;
+    private final MutableLiveData<List<ProductEntity>> mProducts;
 
     public ProductListViewModel(@NonNull Application application,
                                 @NonNull SavedStateHandle savedStateHandle) {
@@ -52,14 +58,38 @@ public class ProductListViewModel extends AndroidViewModel {
         // Use the savedStateHandle.getLiveData() as the input to switchMap,
         // allowing us to recalculate what LiveData to get from the DataRepository
         // based on what query the user has entered
-        mProducts = Transformations.switchMap(
+        /*mProducts = Transformations.switchMap(
                 savedStateHandle.getLiveData("QUERY", null),
                 (Function<CharSequence, LiveData<List<ProductEntity>>>) query -> {
                     if (TextUtils.isEmpty(query)) {
                         return mRepository.getProducts();
                     }
                     return mRepository.searchProducts("*" + query + "*");
-                });
+                });*/
+
+        mProducts = new MutableLiveData();
+        Log.i(ProductListFragment.TAG, this + " create mProducts:" + mProducts);
+        loadProducts();
+    }
+
+    private void loadProducts() {
+        // Do an asynchronous operation to fetch users.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.i(ProductListFragment.TAG, " 加载数据 ");
+                            Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                List<ProductEntity> list = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    list.add(new ProductEntity(i, "name:"+i, "desc:"+i, i*10));
+                }
+                mProducts.postValue(list);
+            }
+        }).start();
     }
 
     public void setQuery(CharSequence query) {

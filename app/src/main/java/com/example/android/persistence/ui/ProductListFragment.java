@@ -16,6 +16,7 @@
 
 package com.example.android.persistence.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -34,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ListFragmentBinding;
 import com.example.android.persistence.db.entity.ProductEntity;
+import com.example.android.persistence.ui.test.SecondActivity;
 import com.example.android.persistence.util.ThreadUtil;
 import com.example.android.persistence.viewmodel.ProductListViewModel;
 
@@ -86,12 +88,16 @@ public class ProductListFragment extends Fragment {
         // viewmodel 不是自己去new的, ViewModelProvider 提供
 
         // fragment is LifecycleOwner and ViewModelStoreOwner
+        // ViewModelProvider中的参数 ViewModelStoreOwner 代表着scope (Activity 与 fragment)
         final ProductListViewModel viewModel =
                 new ViewModelProvider(this).get(ProductListViewModel.class);
-
+        Log.i(ProductListFragment.TAG, "ProductListFragment ProductListViewModel:" + viewModel);
         mBinding.productsSearchBtn.setOnClickListener(v -> {
             Editable query = mBinding.productsSearchBox.getText();
             viewModel.setQuery(query);
+        });
+        mBinding.testViewModel.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity().getApplicationContext(), SecondActivity.class));
         });
 
         subscribeUi(viewModel.getProducts());
@@ -101,6 +107,7 @@ public class ProductListFragment extends Fragment {
         // Update the list when the data changes
         // getViewLifecycleOwner() 等价于 this
         liveData.observe(getViewLifecycleOwner(), myProducts -> {
+            Log.i(ProductListFragment.TAG, "ProductListFragment myProducts :" + myProducts);
              if (myProducts != null) {
                 Log.i(TAG, "subscribeUi: 数据回来了 " + ThreadUtil.getThreadInfo());
                 mBinding.setIsLoading(false);

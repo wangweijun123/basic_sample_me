@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.persistence.R;
 import com.example.android.persistence.model.Product;
+import com.example.android.persistence.util.ThreadUtil;
 import com.example.android.persistence.viewmodel.ProductListViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment, ProductListFragment.TAG).commit();
         }
-//        test();
-        testArrayMap();
+        test();
+//        testArrayMap();
     }
 
     /** Shows the product detail fragment */
@@ -84,18 +85,22 @@ public class MainActivity extends AppCompatActivity {
          *
          *
          */
+        // 不同的ViewModelStoreOwner 名字, Activity 与 fragment获取的ProductListViewModel不是同一个
+        // 只是重建的时候才是同一个 ViewModel
         final ProductListViewModel viewModel =
                 new ViewModelProvider(this).get(ProductListViewModel.class);
-        Log.i(ProductListFragment.TAG, "viewModel:" + viewModel);
-
-        mutableLiveData.observe(this, new Observer<String>() {
+        Log.i(ProductListFragment.TAG, "MainActivity viewModel:" + viewModel);
+        viewModel.getProducts().observe(this, myProducts -> {
+            Log.i(ProductListFragment.TAG, "MainActivity myProducts :" + myProducts);
+        });
+        /*mutableLiveData.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 Log.i(ProductListFragment.TAG, "onChanged s:" + s);
             }
         });
 
-        mutableLiveData.postValue("sssss");
+        mutableLiveData.postValue("sssss");*/
     }
 
 

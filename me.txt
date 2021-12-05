@@ -13,3 +13,11 @@
 
 AndroidViewModel
 
+viewModel 的声明周期是传给它 new ViewModelProvider(this) 的lifecycle
+对于 activity，是在 activity 完成时；而对于 fragment，是在 fragment 分离时。
+
+viewModel 有scope作用域的概念, 是 activity范围，还是fragment
+
+一个activity中有两个activity, 如果以activity来产生viewmodeProvider，必然拿到的是同一个Viewmode对象，数据同步
+
+
