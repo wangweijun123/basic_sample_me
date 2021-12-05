@@ -20,4 +20,15 @@ viewModel 有scope作用域的概念, 是 activity范围，还是fragment
 
 一个activity中有两个activity, 如果以activity来产生viewmodeProvider，必然拿到的是同一个Viewmode对象，数据同步
 
+ViewModel 作用:
+0 scope: 作用在activity或 fragment声明周期内(取决于ViewModelProvider(这个参数))
+1 确保数据在设备配置更改后还是同一个实例
 
+livedata: 作用
+具有声明周期感知能力
+
+
+ ViewModel = new ViewModelProvider(这个参数很重要),从不同的组件获取相同的对象获取的到viewmodel是同一个
+
+fragment 与 activity通信   借助viewmodel,在 fragment传require activity对象
+fragment与fragment通信
