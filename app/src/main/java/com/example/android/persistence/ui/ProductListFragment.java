@@ -47,12 +47,32 @@ public class ProductListFragment extends Fragment {
 
     private ListFragmentBinding mBinding;
 
+    public ProductListFragment() {}
+
+    // test
+    int age; // 配置变化,Fragment 参数丢失
+    public ProductListFragment(int age) {
+        this.age = age;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false);
+        Log.i(ProductListFragment.TAG, "ProductListFragment onCreate: savedInstanceState:" + savedInstanceState);
+        if (savedInstanceState != null) {
+            age = savedInstanceState.getInt("age", -1);
+            Log.i(ProductListFragment.TAG, "从savedInstanceState 获取age = " + age);
+        }
 
+
+        Bundle bundle = requireArguments();
+        int age = bundle.getInt("age", -100);
+        Log.i(ProductListFragment.TAG, "requireArguments 获取age = " + age);
+
+        // databinding 作用: inflate 布局，而且把布局的控件保存起来,包括根view
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false);
+        // 在onCreateView中了设置适配器
         mProductAdapter = new ProductAdapter(mProductClickCallback);
         mBinding.productsList.setAdapter(mProductAdapter);
 
@@ -62,6 +82,10 @@ public class ProductListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // ProductListViewModel 由ViewModelProvider反射生成,如果需要传参,需要自己实现factory
+        // viewmodel 不是自己去new的, ViewModelProvider 提供
+
+        // fragment is LifecycleOwner and ViewModelStoreOwner
         final ProductListViewModel viewModel =
                 new ViewModelProvider(this).get(ProductListViewModel.class);
 
@@ -75,6 +99,7 @@ public class ProductListFragment extends Fragment {
 
     private void subscribeUi(LiveData<List<ProductEntity>> liveData) {
         // Update the list when the data changes
+        // getViewLifecycleOwner() 等价于 this
         liveData.observe(getViewLifecycleOwner(), myProducts -> {
              if (myProducts != null) {
                 Log.i(TAG, "subscribeUi: 数据回来了 " + ThreadUtil.getThreadInfo());
@@ -90,6 +115,19 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+
+    /**
+     * 适合保存少量数据
+     */
+    /*@Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.i(TAG, "onSaveInstanceState  ");
+        outState.putInt("age", age);
+    }*/
+
+    /**
+     *
+     */
     @Override
     public void onDestroyView() {
         mBinding = null;

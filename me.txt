@@ -1,0 +1,15 @@
+1 context application activity 的关系
+2 https
+3 handler 消息机制(屏障)
+4 synchizied volite 以及 无锁原理 CAS
+5 sleep 与 wait()
+6 invalite()  requestLayout()
+7 给Fragment传参两种方式: 1 Bundle  2 直接从构造函数传入  这两种传参区别
+8 touch 事件
+9 view绘制流程
+9  void test(Arraylist<String> l)
+   void test(Arraylist<Integer> l)
+   有问题吗 ？？？
+
+AndroidViewModel
+

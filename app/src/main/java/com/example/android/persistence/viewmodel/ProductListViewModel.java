@@ -32,6 +32,9 @@ import com.example.android.persistence.db.entity.ProductEntity;
 
 import java.util.List;
 
+/**
+ * viewmodel管理着数据的存储, 同时处理与界面(Activity/Fragment)的交互
+ */
 public class ProductListViewModel extends AndroidViewModel {
     private static final String QUERY_KEY = "QUERY";
 

@@ -60,10 +60,11 @@ public class ProductFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ProductViewModel.Factory factory = new ProductViewModel.Factory(
                 requireActivity().getApplication(), requireArguments().getInt(KEY_PRODUCT_ID));
-
+        // ProductViewModel 有ViewModelProvider反射生成,如果需要传参,需要自己实现factory
         final ProductViewModel model = new ViewModelProvider(this, factory)
                 .get(ProductViewModel.class);
 
+        //  当在xml定义AndroidViewModel对象, 必须调用binding.setLifecycleOwner
         mBinding.setLifecycleOwner(getViewLifecycleOwner());
         mBinding.setProductViewModel(model);
 
